@@ -10,24 +10,6 @@
 
 #include "is_tetrahedron.h"
 
-// Six edges of a tetrahederon.
-using EdgeList = std::array<double, 6>;
-
-// Returns whether the min and max edges are opposite.
-bool MinMaxOpposite(const EdgeList& edges) {
-  std::array<std::tuple<double, int>, 6> foo;
-  for (int i = 0; i < foo.size(); ++i) {
-    foo[i] = std::make_tuple(edges[i], i);
-  }
-  std::sort(foo.begin(), foo.end());
-  int a = std::get<1>(foo.front());
-  int b = std::get<1>(foo.back());
-  if (a > b) {
-    std::swap(a, b);
-  }
-  return (a == 0 && b == 4) || (a == 1 && b == 3) || (a == 2 && b == 5);
-}
-
 // Stores in result the percentage of the time random edges form a tetrahedron.
 void Run(double* result) {
   std::random_device r;
@@ -36,7 +18,7 @@ void Run(double* result) {
 
   static const uint64_t times = 10'000'000;
   uint64_t counted = 0;
-  EdgeList edges;
+  std::array<double, 6> edges;
 
   for (uint64_t i = 0; i < times; ++i) {
     for (double& e : edges) {
