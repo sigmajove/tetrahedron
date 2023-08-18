@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "cmd_is_tetrahedron.h"
+#include "fold_is_tetrahedron.h"
 #include "is_tetrahedron.h"
 
 // The values 0, 1, 2, 3, 4, 5 in some order.
@@ -19,8 +20,7 @@ using Permutation = std::array<size_t, 6>;
 std::vector<Permutation> FindPermuations() {
   // Permuations known to be correctness-preserving
   static const std::array<Permutation, 3> generators = {
-      Permutation{1, 2, 0, 4, 5, 3}, 
-      Permutation{0, 2, 1, 3, 5, 4},
+      Permutation{1, 2, 0, 4, 5, 3}, Permutation{0, 2, 1, 3, 5, 4},
       Permutation{5, 3, 1, 2, 0, 4}};
 
   std::set<Permutation> expand{{0, 1, 2, 3, 4, 5}};
@@ -97,6 +97,13 @@ size_t RunCannedTests() {
                b, c, a1, b1, c1);
         ++count;
       }
+
+      result = FoldIsTetrahedron(a, b, c, a1, b1, c1);
+      if (result != data.result) {
+        printf("FoldIsTetrahedron %d %.5f %.5f %.5f %.5f %.5f %.5f\n", result,
+               a, b, c, a1, b1, c1);
+        ++count;
+      }
     }
   }
   return count;
@@ -115,12 +122,17 @@ size_t RunRandomTests() {
     const double a1 = dist(gen);
     const double b1 = dist(gen);
     const double c1 = dist(gen);
-    const bool r0 = IsTetrahedron(a, b, c, a1, b1, c1);
-    const bool r1 = CmdIsTetrahedron(a, b, c, a1, b1, c1);
+    const bool r0 = CmdIsTetrahedron(a, b, c, a1, b1, c1);
+    const bool r1 = IsTetrahedron(a, b, c, a1, b1, c1);
+    const bool r2 = FoldIsTetrahedron(a, b, c, a1, b1, c1);
     if (r0 != r1) {
-      printf("Mismatch %d/%d %.5f %.5f %.5f %.5f %.5f %.5f\n", r0, r1, a, b, c,
-             a1, b1, c1);
+      printf("Mismatch Is %d/%d %.5f %.5f %.5f %.5f %.5f %.5f\n",
+             r0, r1, a, b, c, a1, b1, c1);
       ++count;
+    }
+    if (r0 != r2) {
+      printf("Mismatch Fold %d/%d %.5f %.5f %.5f %.5f %.5f %.5f\n",
+             r0, r2, a, b, c, a1, b1, c1);
     }
   }
   return count;

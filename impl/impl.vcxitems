@@ -15,10 +15,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)cmd_is_tetrahedron.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)fold_is_tetrahedron.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)is_tetrahedron.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)cmd_is_tetrahedron.cc" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)fold_is_tetrahedron.cc" />
     <ClCompile Include="$(MSBuildThisFileDirectory)is_tetrahedron.cc" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Source.cpp" />
   </ItemGroup>
 </Project>

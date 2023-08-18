@@ -7,7 +7,7 @@
 #include <tuple>
 #include <vector>
 
-#include "is_tetrahedron.h"
+#include "fold_is_tetrahedron.h"
 
 // Six edges of a tetrahederon.
 using EdgeList = std::array<double, 6>;
@@ -23,17 +23,14 @@ bool MinMaxOpposite(const EdgeList& edges) {
   // Fetch the tags of the smallest and largest edge.
   int a = std::get<1>(tagged.front());
   int b = std::get<1>(tagged.back());
-  if (a > b) {
-    std::swap(a, b);
-  }
 
   // Check whether those edges are opposite each other.
-  return a == 0 && b == 4 || a == 1 && b == 3 || a == 2 && b == 5;
+  return std::abs(a - b) == 3;
 }
 
 void Run(double* result) {
   std::random_device r;
-  std::default_random_engine gen(r());
+  std::mt19937_64 gen(r());  // 64-bit Mersenne Twister, randomly seeded. 
   std::uniform_real_distribution<> dist(0.0, 1.0);
 
   static const uint64_t times = 10000000;
@@ -45,8 +42,12 @@ void Run(double* result) {
       for (double& e : edges) {
         e = dist(gen);
       }
-    } while (!IsTetrahedron(edges[0], edges[1], edges[2],
-                            edges[4], edges[3], edges[5]));
+      const double m = *std::max_element(edges.begin(), edges.end());
+      for (double& e : edges) {
+        e = e / m;
+      }
+    } while (!FoldIsTetrahedron(edges[0], edges[1], edges[2],
+                            edges[3], edges[4], edges[5]));
     if (MinMaxOpposite(edges)) {
       ++counted;
     }
@@ -67,7 +68,7 @@ double RunThreads() {
     threads[i].join();
     sum += result[i];
   }
-  return sum /= num_threads;
+  return sum / num_threads;
 }
 
 // Estimates the probability that six randomly chosen edges form a tetrahedron,
