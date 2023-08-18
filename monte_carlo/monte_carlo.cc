@@ -73,7 +73,7 @@ double RunThreads() {
 
 // Estimates the probability that six randomly chosen edges form a tetrahedron,
 // and an error bar on that estimation.
-int main(int argc, char* argv[]) {
+int main() {
   double smallest = 100.0;
   double largest = -1.0;
   double total = 0;
