@@ -7,7 +7,7 @@
 #include <tuple>
 #include <vector>
 
-#include "fold_is_tetrahedron.h"
+#include "is_tetrahedron.h"
 
 // Six edges of a tetrahederon.
 using EdgeList = std::array<double, 6>;
@@ -46,7 +46,7 @@ void Run(double* result) {
       for (double& e : edges) {
         e = e / m;
       }
-    } while (!FoldIsTetrahedron(edges[0], edges[1], edges[2],
+    } while (!IsTetrahedron(edges[0], edges[1], edges[2],
                             edges[3], edges[4], edges[5]));
     if (MinMaxOpposite(edges)) {
       ++counted;
